@@ -1,0 +1,36 @@
+[
+  {
+    "id": "fb25f778ec57",
+    "filename": "clip_fb25f778ec57.mp4",
+    "download_url": "/api/download/clip_fb25f778ec57.mp4",
+    "stream_url": "/output/clip_fb25f778ec57.mp4",
+    "title": "Lose 150 Lbs Together, Win $250,000",
+    "thumbnail": "https://i.ytimg.com/vi_webp/RE3_PGwDwhw/maxresdefault.webp",
+    "duration": 30.03,
+    "duration_formatted": "00:30",
+    "width": 1080,
+    "height": 1920,
+    "file_size_mb": 12.22,
+    "style": "blur_9_16",
+    "headline": "WAIT TILL THE VERY END! \ud83d\ude31",
+    "created_at": 1792592863.486572,
+    "created_at_formatted": "Oct 21, 19:57"
+  },
+  {
+    "id": "65f305dc7ce5",
+    "filename": "clip_65f305dc7ce5.mp4",
+    "download_url": "/api/download/clip_65f305dc7ce5.mp4",
+    "stream_url": "/output/clip_65f305dc7ce5.mp4",
+    "title": "No Way MrBeast did THIS !",
+    "thumbnail": "",
+    "duration": 5.02,
+    "duration_formatted": "00:05",
+    "width": 720,
+    "height": 960,
+    "file_size_mb": 2.46,
+    "style": "original",
+    "headline": "NO WAY MRBEAST DID THIS!",
+    "created_at": 1792592117.865734,
+    "created_at_formatted": "Oct 21, 19:45"
+  }
+]

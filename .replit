@@ -1,0 +1,13 @@
+run = "python run.py"
+entrypoint = "run.py"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["python", "run.py"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 8080
+externalPort = 80

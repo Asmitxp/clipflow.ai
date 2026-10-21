@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipFlow AI — YouTube to Viral 9:16 Shorts Studio</title>
+    <meta name="description" content="Generate high-impact YouTube Shorts, TikToks, and Reels from any YouTube video link with smart 9:16 framing, blurred background, visual timeline trimmer, and viral hook overlays.">
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="dark-theme">
+    <!-- Ambient Background Glows -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-grid-pattern"></div>
+
+    <!-- Navigation Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i data-lucide="scissors" class="icon-pulse"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">Clip<span class="gradient-text">Flow</span></span>
+                    <span class="brand-badge">SHORTS AI</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="#studio-section" class="nav-link active">Studio</a>
+                <a href="#gallery-section" class="nav-link">Recent Clips <span id="gallery-count" class="badge-count">0</span></a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="system-status" id="system-status-indicator" title="FFmpeg & yt-dlp ready">
+                    <span class="status-dot"></span>
+                    <span class="status-label">Engine Ready</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-badge">
+                <i data-lucide="sparkles" class="icon-small"></i>
+                <span>Transform Long Videos Into Viral 9:16 Shorts</span>
+            </div>
+            <h1 class="hero-title">
+                Make YouTube Shorts <br>
+                <span class="gradient-text">In Just A Few Clicks</span>
+            </h1>
+            <p class="hero-subtitle">
+                Paste any YouTube link, visually select your timeline, pick your 9:16 vertical style, and export studio-quality clips ready for Shorts, TikTok & Reels.
+            </p>
+
+            <!-- URL Input Box -->
+            <div class="url-input-wrapper">
+                <div class="url-input-card">
+                    <div class="input-icon-left">
+                        <i data-lucide="youtube" class="youtube-red-icon"></i>
+                    </div>
+                    <input 
+                        type="url" 
+                        id="yt-url-input" 
+                        placeholder="Paste YouTube link (e.g. https://youtube.com/shorts/xHSegvvvSUg or watch?v=...)" 
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <button id="paste-btn" class="icon-btn" title="Paste from Clipboard">
+                        <i data-lucide="clipboard"></i>
+                    </button>
+                    <button id="inspect-btn" class="btn-primary">
+                        <span class="btn-text">Inspect Video</span>
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Quick Presets Demo Pills -->
+                <div class="demo-pills-bar">
+                    <span class="demo-label">Try example:</span>
+                    <button class="demo-pill" data-url="https://youtube.com/shorts/xHSegvvvSUg" title="Your example link">
+                        🔥 <span>MrBeast Short (Example)</span>
+                    </button>
+                    <button class="demo-pill" data-url="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                        🎵 <span>Music Video</span>
+                    </button>
+                    <button class="demo-pill" data-url="https://www.youtube.com/watch?v=jNQXAC9IVRw">
+                        🐘 <span>First Ever YouTube Video</span>
+                    </button>
+                </div>
+
+                <!-- Alert Message Area -->
+                <div id="alert-banner" class="alert-banner hidden">
+                    <i data-lucide="alert-circle" id="alert-icon"></i>
+                    <span id="alert-text">Error message</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Studio Workspace Section (Shown after video loaded) -->
+        <section id="studio-section" class="studio-section hidden">
+            <!-- Video Meta Card Header -->
+            <div class="video-meta-bar">
+                <div class="meta-left">
+                    <img id="meta-thumb" src="" alt="Thumbnail" class="meta-thumb">
+                    <div class="meta-details">
+                        <h2 id="meta-title" class="meta-title">Video Title</h2>
+                        <div class="meta-tags">
+                            <span id="meta-channel" class="meta-tag"><i data-lucide="user"></i> Channel</span>
+                            <span id="meta-duration" class="meta-tag"><i data-lucide="clock"></i> 00:00</span>
+                            <span id="meta-aspect" class="meta-tag badge-cyan"><i data-lucide="aspect-ratio"></i> 16:9</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="meta-right">
+                    <button id="change-video-btn" class="btn-secondary btn-sm">
+                        <i data-lucide="refresh-cw"></i> Change Video
+                    </button>
+                </div>
+            </div>
+
+            <div class="studio-grid">
+                <!-- Left Column: Video Player & Timeline Scrubber -->
+                <div class="studio-card player-column">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <i data-lucide="film" class="card-header-icon"></i>
+                            <div>
+                                <h3 class="card-title">Timeline Trimmer</h3>
+                                <p class="card-desc">Drag sliders or set timestamps for your clip</p>
+                            </div>
+                        </div>
+                        <div class="time-selection-badge">
+                            <span class="label">Clip Length:</span>
+                            <span id="clip-duration-badge" class="badge-accent">00:30.0</span>
+                        </div>
+                    </div>
+
+                    <!-- Embedded Interactive YouTube Player -->
+                    <div class="player-container">
+                        <div id="yt-player-wrapper" class="player-wrapper">
+                            <!-- Embedded iframe will load here -->
+                            <div id="player-placeholder" class="player-placeholder">
+                                <img id="player-thumb-bg" src="" alt="Thumbnail">
+                                <div class="player-overlay-play">
+                                    <i data-lucide="play" class="play-icon-large"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Timeline Scrubber Interface -->
+                    <div class="timeline-scrubber-card">
+                        <!-- Playhead & Time Info -->
+                        <div class="timeline-info-row">
+                            <div class="time-readout">
+                                <span class="time-label">START</span>
+                                <span id="display-start-time" class="time-val">00:00.0</span>
+                            </div>
+                            <div class="timeline-center-hint">
+                                <i data-lucide="sparkles" class="icon-tiny"></i>
+                                <span>Ideal Short duration: 15s – 59s</span>
+                            </div>
+                            <div class="time-readout right">
+                                <span class="time-label">END</span>
+                                <span id="display-end-time" class="time-val">00:30.0</span>
+                            </div>
+                        </div>
+
+                        <!-- Visual Dual Range Slider -->
+                        <div class="slider-track-container" id="slider-track-container">
+                            <div class="slider-base-bar"></div>
+                            <div class="slider-highlight-bar" id="slider-highlight"></div>
+                            <input type="range" id="range-start" min="0" max="100" value="0" step="0.1" class="slider-thumb-input thumb-start">
+                            <input type="range" id="range-end" min="0" max="100" value="30" step="0.1" class="slider-thumb-input thumb-end">
+                        </div>
+
+                        <!-- Manual Precise Timestamp Inputs -->
+                        <div class="manual-time-inputs">
+                            <div class="input-time-group">
+                                <label for="input-start-sec">Start (seconds):</label>
+                                <div class="stepper-box">
+                                    <button class="step-btn" id="btn-step-start-down">-1s</button>
+                                    <input type="number" id="input-start-sec" min="0" step="0.5" value="0">
+                                    <button class="step-btn" id="btn-step-start-up">+1s</button>
+                                </div>
+                            </div>
+
+                            <div class="quick-trim-buttons">
+                                <button class="quick-trim-btn" data-dur="15">15s Short</button>
+                                <button class="quick-trim-btn active" data-dur="30">30s Short</button>
+                                <button class="quick-trim-btn" data-dur="60">60s Short</button>
+                            </div>
+
+                            <div class="input-time-group">
+                                <label for="input-end-sec">End (seconds):</label>
+                                <div class="stepper-box">
+                                    <button class="step-btn" id="btn-step-end-down">-1s</button>
+                                    <input type="number" id="input-end-sec" min="1" step="0.5" value="30">
+                                    <button class="step-btn" id="btn-step-end-up">+1s</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Shorts Studio Styling & Options -->
+                <div class="studio-card options-column">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <i data-lucide="sliders" class="card-header-icon"></i>
+                            <div>
+                                <h3 class="card-title">Shorts Customizer</h3>
+                                <p class="card-desc">Format for YouTube Shorts, Reels & TikTok</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aspect Ratio & Framing Style -->
+                    <div class="option-block">
+                        <label class="block-label">
+                            <span>Framing & Aspect Ratio</span>
+                            <span class="info-pill">Viral Format</span>
+                        </label>
+                        <div class="style-cards-grid">
+                            <label class="style-card selected">
+                                <input type="radio" name="clip_style" value="blur_9_16" checked>
+                                <div class="card-inner">
+                                    <div class="style-icon-preview preview-blur">
+                                        <div class="preview-mini-video"></div>
+                                    </div>
+                                    <span class="style-name">Smart Blur (9:16)</span>
+                                    <span class="style-desc">Sharp center + blurred ambient video</span>
+                                </div>
+                            </label>
+
+                            <label class="style-card">
+                                <input type="radio" name="clip_style" value="crop_9_16">
+                                <div class="card-inner">
+                                    <div class="style-icon-preview preview-crop">
+                                        <div class="preview-crop-frame"></div>
+                                    </div>
+                                    <span class="style-name">Center Crop (9:16)</span>
+                                    <span class="style-desc">Full bleed vertical crop</span>
+                                </div>
+                            </label>
+
+                            <label class="style-card">
+                                <input type="radio" name="clip_style" value="fit_9_16">
+                                <div class="card-inner">
+                                    <div class="style-icon-preview preview-fit">
+                                        <div class="preview-letterbox-video"></div>
+                                    </div>
+                                    <span class="style-name">Letterbox (9:16)</span>
+                                    <span class="style-desc">Clean minimalist black bars</span>
+                                </div>
+                            </label>
+
+                            <label class="style-card">
+                                <input type="radio" name="clip_style" value="original">
+                                <div class="card-inner">
+                                    <div class="style-icon-preview preview-original">
+                                        <div class="preview-wide-video"></div>
+                                    </div>
+                                    <span class="style-name">Original Ratio</span>
+                                    <span class="style-desc">Preserve source dimensions</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Hook Headline Banner Overlay -->
+                    <div class="option-block">
+                        <div class="label-toggle-row">
+                            <label class="block-label" for="headline-input">Hook Headline Banner</label>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-headline" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                        <div id="headline-fields" class="sub-fields">
+                            <input 
+                                type="text" 
+                                id="headline-input" 
+                                class="styled-input" 
+                                placeholder="e.g. NO WAY HE DID THIS! 😱 WAIT TILL END"
+                                value="WAIT TILL THE VERY END! 😱"
+                                maxlength="90"
+                            />
+                            <div class="headline-theme-selector">
+                                <span class="theme-label">Style:</span>
+                                <label class="theme-chip active" data-style="yellow">
+                                    <input type="radio" name="hl_style" value="yellow" checked>
+                                    <span class="dot yellow"></span> Viral Yellow
+                                </label>
+                                <label class="theme-chip" data-style="neon">
+                                    <input type="radio" name="hl_style" value="neon">
+                                    <span class="dot neon"></span> Cyber Neon
+                                </label>
+                                <label class="theme-chip" data-style="red">
+                                    <input type="radio" name="hl_style" value="red">
+                                    <span class="dot red"></span> Fire Red
+                                </label>
+                                <label class="theme-chip" data-style="glass">
+                                    <input type="radio" name="hl_style" value="glass">
+                                    <span class="dot glass"></span> Glass Pill
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Viral Add-ons -->
+                    <div class="option-block">
+                        <label class="block-label">Add-ons & Audio</label>
+                        <div class="addons-grid">
+                            <!-- Progress Bar Toggle -->
+                            <div class="addon-item">
+                                <div class="addon-info">
+                                    <i data-lucide="activity" class="addon-icon"></i>
+                                    <div>
+                                        <span class="addon-title">Red Progress Bar</span>
+                                        <span class="addon-sub">Animated bottom timeline</span>
+                                    </div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-progress-bar" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+
+                            <!-- Audio Boost -->
+                            <div class="addon-item">
+                                <div class="addon-info">
+                                    <i data-lucide="volume-2" class="addon-icon"></i>
+                                    <div>
+                                        <span class="addon-title">Audio Boost</span>
+                                        <span class="addon-sub">Crisp, punchy dialogue</span>
+                                    </div>
+                                </div>
+                                <select id="audio-boost-select" class="styled-select">
+                                    <option value="1.0">Normal (100%)</option>
+                                    <option value="1.25" selected>Boosted (+25%)</option>
+                                    <option value="1.5">Loud (+50%)</option>
+                                </select>
+                            </div>
+
+                            <!-- Watermark / Tag -->
+                            <div class="addon-item full-width">
+                                <div class="addon-info">
+                                    <i data-lucide="at-sign" class="addon-icon"></i>
+                                    <div>
+                                        <span class="addon-title">Creator Handle</span>
+                                        <span class="addon-sub">Watermark tag at bottom</span>
+                                    </div>
+                                </div>
+                                <input type="text" id="watermark-input" class="styled-input-sm" placeholder="@yourchannel">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generate Button CTA -->
+                    <div class="action-submit-block">
+                        <button id="render-clip-btn" class="btn-gradient-pulse">
+                            <i data-lucide="sparkles"></i>
+                            <span>Generate 9:16 Short Clip</span>
+                            <i data-lucide="zap"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Processing Modal / Drawer -->
+        <div id="processing-modal" class="modal-overlay hidden">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <div class="spinner-pulse">
+                        <i data-lucide="scissors" class="icon-spin"></i>
+                    </div>
+                    <h3 class="modal-title">Crafting Your Short</h3>
+                    <p class="modal-subtitle" id="task-message">Analyzing streams & initializing FFmpeg pipeline...</p>
+                </div>
+
+                <!-- Live Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="progress-fill" style="width: 15%;"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="progress-step-text">Downloading YouTube segment...</span>
+                        <span id="progress-pct" class="progress-pct">15%</span>
+                    </div>
+                </div>
+
+                <!-- Animated Steps Pipeline -->
+                <div class="pipeline-steps">
+                    <div class="pipe-step active" id="step-dl">
+                        <span class="step-dot"></span>
+                        <span class="step-label">Fast Segment Extraction</span>
+                    </div>
+                    <div class="pipe-step" id="step-render">
+                        <span class="step-dot"></span>
+                        <span class="step-label">9:16 Aspect & Smart Blur</span>
+                    </div>
+                    <div class="pipe-step" id="step-badge">
+                        <span class="step-dot"></span>
+                        <span class="step-label">Hook Banner & Progress Bar</span>
+                    </div>
+                    <div class="pipe-step" id="step-export">
+                        <span class="step-dot"></span>
+                        <span class="step-label">Fast-Start MP4 Encoding</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Section (Phone Mockup Showcase) -->
+        <section id="result-section" class="result-section hidden">
+            <div class="result-container">
+                <div class="result-badge-success">
+                    <i data-lucide="check-circle" class="icon-success"></i>
+                    <span>Your YouTube Short Is Ready!</span>
+                </div>
+
+                <div class="result-content-grid">
+                    <!-- Left: Realistic Smartphone Frame Preview -->
+                    <div class="phone-mockup-wrapper">
+                        <div class="phone-device">
+                            <!-- Dynamic Island / Speaker notch -->
+                            <div class="phone-notch">
+                                <div class="notch-camera"></div>
+                                <div class="notch-speaker"></div>
+                            </div>
+
+                            <!-- Screen Container -->
+                            <div class="phone-screen">
+                                <video id="result-video-player" playsinline loop controls autoplay muted></video>
+                                
+                                <!-- Authentic YouTube Shorts Floating UI Icons Mockup -->
+                                <div class="shorts-ui-overlay">
+                                    <div class="shorts-side-actions">
+                                        <div class="shorts-action-btn">
+                                            <i data-lucide="thumbs-up"></i>
+                                            <span>Like</span>
+                                        </div>
+                                        <div class="shorts-action-btn">
+                                            <i data-lucide="message-square"></i>
+                                            <span>Comment</span>
+                                        </div>
+                                        <div class="shorts-action-btn">
+                                            <i data-lucide="share-2"></i>
+                                            <span>Share</span>
+                                        </div>
+                                        <div class="shorts-action-btn">
+                                            <i data-lucide="repeat"></i>
+                                            <span>Remix</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Clip Details & Download Controls -->
+                    <div class="result-actions-card">
+                        <div class="result-meta-header">
+                            <span class="badge-accent" id="res-badge-style">9:16 Smart Blur</span>
+                            <h3 id="res-clip-title" class="res-title">Viral Short Clip</h3>
+                            <p class="res-subtitle" id="res-clip-desc">Ready to upload to YouTube Shorts, Instagram Reels, and TikTok.</p>
+                        </div>
+
+                        <div class="spec-pills-row">
+                            <div class="spec-pill">
+                                <i data-lucide="clock"></i>
+                                <div>
+                                    <span class="spec-label">Duration</span>
+                                    <span class="spec-val" id="res-duration">00:30.0</span>
+                                </div>
+                            </div>
+                            <div class="spec-pill">
+                                <i data-lucide="monitor"></i>
+                                <div>
+                                    <span class="spec-label">Resolution</span>
+                                    <span class="spec-val" id="res-resolution">1080 × 1920</span>
+                                </div>
+                            </div>
+                            <div class="spec-pill">
+                                <i data-lucide="hard-drive"></i>
+                                <div>
+                                    <span class="spec-label">File Size</span>
+                                    <span class="spec-val" id="res-filesize">8.4 MB</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons-group">
+                            <a id="btn-download-clip" href="#" download class="btn-download-primary">
+                                <i data-lucide="download"></i>
+                                <span>Download Clip (.MP4)</span>
+                            </a>
+                            <button id="btn-copy-link" class="btn-secondary">
+                                <i data-lucide="copy"></i>
+                                <span>Copy Video Link</span>
+                            </button>
+                        </div>
+
+                        <div class="quick-links-row">
+                            <button id="btn-trim-another" class="btn-text-action">
+                                <i data-lucide="scissors"></i> Clip Another Part of This Video
+                            </button>
+                            <button id="btn-create-new" class="btn-text-action">
+                                <i data-lucide="plus-circle"></i> New Video Link
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery / Recent Clips Section -->
+        <section id="gallery-section" class="gallery-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Your Generated Clips</h2>
+                    <p class="section-subtitle">All clips exported in this studio are saved here for instant preview and download.</p>
+                </div>
+            </div>
+
+            <div id="clips-grid" class="clips-grid">
+                <!-- Empty state shown by default -->
+                <div id="gallery-empty-state" class="empty-state">
+                    <div class="empty-icon-circle">
+                        <i data-lucide="film"></i>
+                    </div>
+                    <h3>No Clips Generated Yet</h3>
+                    <p>Enter a YouTube link above to create your first 9:16 vertical short.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="features-section">
+            <div class="section-header centered">
+                <span class="badge-pill">HOW IT WORKS</span>
+                <h2 class="section-title">From Horizontal Video to Viral Short</h2>
+                <p class="section-subtitle">Engineered with high performance FFmpeg stream filtering and yt-dlp slice streaming.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="link"></i></div>
+                    <h3>1. Paste YouTube URL</h3>
+                    <p>Supports any YouTube video, live stream recording, or existing short. Automatic metadata and resolution detection.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="sliders-horizontal"></i></div>
+                    <h3>2. Pick Hook Segment</h3>
+                    <p>Interactive dual-handle scrubber lets you pinpoint the exact seconds with millisecond precision and 15s/30s/60s presets.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="smartphone"></i></div>
+                    <h3>3. 9:16 Smart Blur Engine</h3>
+                    <p>Dynamic background blur keeps your subject in sharp focus without awkward letterboxing or cutting off key actions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="download-cloud"></i></div>
+                    <h3>4. Instant MP4 Export</h3>
+                    <p>H.264 high-profile encoding with fast-start streaming for immediate upload to YouTube Shorts, Reels & TikTok.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <span class="footer-brand">ClipFlow AI Studio</span>
+                <span class="footer-desc">Professional YouTube Shorts & Video Clipper. Built with FastAPI, yt-dlp & FFmpeg.</span>
+            </div>
+            <div class="footer-right">
+                <span>Fast stream cutting • High-DPI 1080x1920 export</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Preview Modal for Gallery items -->
+    <div id="preview-modal" class="modal-overlay hidden">
+        <div class="preview-modal-card">
+            <button id="close-preview-modal" class="close-modal-btn">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="modal-video-wrapper">
+                <video id="modal-video" controls autoplay playsinline></video>
+            </div>
+            <div class="modal-video-info">
+                <h4 id="modal-video-title">Clip Title</h4>
+                <a id="modal-video-download" href="#" download class="btn-primary btn-sm">
+                    <i data-lucide="download"></i> Download MP4
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Frontend JS Logic -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

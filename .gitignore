@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Output clips & temp
+output/*.mp4
+temp/*
+!temp/.gitkeep
+!output/.gitkeep
+
+# Logs & OS files
+*.log
+.DS_Store
+Thumbs.db
